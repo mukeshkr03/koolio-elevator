@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG Elevator</title>
+
+    <style>
+        body {
+            margin: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin-top: 120px;
+        }
+
+        svg {
+            background-color: rgb(195, 225, 244);
+            border: 1.8px solid black;
+            width: 200px;
+        }
+
+        #q1 {
+            height: 450px;
+        }
+
+        #line {
+            stroke: rgb(255, 0, 0);
+            stroke-width: 0.3;
+        }
+
+        #moveDownBtn {
+            height: 100px;
+            width: 55px;
+            cursor: pointer;
+        }
+
+        #moveUpBtn {
+            height: 100px;
+            width: 55px;
+            cursor: pointer;
+        }
+
+        #moveUpBtn_1 {
+            height: 100px;
+            width: 55px;
+            cursor: pointer;
+        }
+
+        #moveDownBtn_1 {
+            height: 100px;
+            width: 55px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <center>
+        <div style="display : flex; justify-content: center; align-items: center;  margin-right: 80px">
+            <div style="width : 200px; height : 450px;">
+                <div style="height : 150px; display : flex; justify-content: center;align-items: center;">
+                    <img id="moveDownBtn"
+                        src="https://t4.ftcdn.net/jpg/03/31/38/27/360_F_331382756_spPwgLXz4ToIzRxD3QPxmSnFCu7hifAR.jpg"
+                        alt="move down">
+                </div>
+                <div style="height : 150px; display : flex; justify-content: center;align-items: center;">
+                    <img id="moveUpBtn_1"
+                        src="https://t3.ftcdn.net/jpg/03/30/10/14/360_F_330101415_Wh3Rrp25iXFkKMj2UjOXiERNUEpgoVNA.jpg"
+                        alt="move up" />
+                    <img id="moveDownBtn_1"
+                        src="https://t4.ftcdn.net/jpg/03/31/38/27/360_F_331382756_spPwgLXz4ToIzRxD3QPxmSnFCu7hifAR.jpg"
+                        alt="move down">
+                </div>
+                <div style="height : 150px; display : flex; justify-content: center;align-items: center;">
+                    <img id="moveUpBtn"
+                        src="https://t3.ftcdn.net/jpg/03/30/10/14/360_F_330101415_Wh3Rrp25iXFkKMj2UjOXiERNUEpgoVNA.jpg"
+                        alt="move up" />
+                </div>
+            </div>
+            <div>
+                <svg id="q1">
+                    <line id="line" x1="200" y1="0" x2="200" y2="500" />
+                    <!-- horizontal lines -->
+                    <line id="line" x1="0" y1="150" x2="500" y2="150" style="stroke: #2b1919;" />
+                    <line id="line" x1="0" y1="300" x2="500" y2="300" />
+                    <!-- rectangle building -->
+                    <!-- <rect x="250" y="0" height="500" width="250" style="stroke: #2b1919; fill: #310a1b;" /> -->
+                    <!-- text building -->
+                    <text x="100" y="75" fill="#000">2</text>
+                    <text x="100" y="225" fill="#000">1</text>
+                    <text x="100" y="375" fill="#000">0</text>
+
+                    <defs>
+                        <g id="liftAndText">
+                            <!-- lift -->
+                            <rect id="lift" height="150" width="200" style="stroke: #2b1919;fill: #b5651d;" />
+                            <!-- text -->
+                            <!-- <text id="floor" x="2" y="20" fill="#fff">1</text> -->
+                        </g>
+                    </defs>
+                    <use id="usedLiftAndText" xlink:href="#liftAndText" x="0" y="300"></use>
+                </svg>
+            </div>
+        </div>
+
+        <script>
+
+            const lift = document.getElementById("lift"); // rectangle
+            const liftText = document.getElementById("usedLiftAndText"); // defs call
+            const moveUpBtn = document.getElementById("moveUpBtn");
+            const moveDownBtn = document.getElementById("moveDownBtn");
+            const moveUpBtn_1 = document.getElementById("moveUpBtn_1");
+            const moveDownBtn_1 = document.getElementById("moveDownBtn_1");
+
+            let motion = null;
+            let whenLiftMovesUp = false;
+            let whenLiftMovesDown = false;
+            let lift_stopped_while_moving_up = false;
+            let lift_stopped_while_moving_down = false;
+            var value_of_y = 0;
+            let xx = false;
+            let yy = false;
+            console.log(value_of_y);
+
+            window.addEventListener("DOMContentLoaded", () => {
+                moveUpBtn.addEventListener("click", () => {
+                    whenLiftMovesUp = true;
+                    whenLiftMovesDown = false;
+                    clearInterval(motion);
+                    motion = setInterval(animateUp, 30);
+                })
+
+                // when the moveDownBtn is clicked
+                moveDownBtn.addEventListener("click", () => {
+                    whenLiftMovesUp = false;
+                    whenLiftMovesDown = true;
+                    clearInterval(motion);
+                    motion = setInterval(animateDown, 30);
+                })
+
+                moveUpBtn_1.addEventListener("click", () => {
+                    // when lift moves from level 0
+                    if (whenLiftMovesUp == true && whenLiftMovesDown == false) {
+                        lift_stopped_while_moving_up = true;
+                        lift_stopped_while_moving_down = false;
+                        xx = true;
+                    }
+                    if (lift_stopped_while_moving_down) {
+                        clearInterval(motion);
+                        motion = setInterval(animateDown, 30);
+                    }
+                })
+
+                moveDownBtn_1.addEventListener("click", () => {
+                    if (whenLiftMovesUp == false && whenLiftMovesDown == true) {
+                        lift_stopped_while_moving_up = false;
+                        lift_stopped_while_moving_down = true;
+                        console.log('yyyyy', value_of_y);
+                        yy = true;
+                    }
+                    if (lift_stopped_while_moving_up) {
+                        clearInterval(motion);
+                        motion = setInterval(animateUp, 30);
+                    }
+                })
+            })
+
+
+            const animateUp = () => {
+                let y = liftText.getAttribute("y");
+                let newY = parseInt(y) - 1;
+                value_of_y = newY;
+                animate(newY);
+                if (xx && whenLiftMovesUp && value_of_y === 150) {
+                    clearInterval(motion);
+                }
+            }
+
+            const animateDown = () => {
+                let y = liftText.getAttribute("y");
+                let newY = parseInt(y) + 1;
+                value_of_y = newY;
+                animate(newY);
+                if (yy && whenLiftMovesDown && value_of_y === 150) {
+                    clearInterval(motion);
+                }
+            }
+
+            const animate = newY => {
+                if (newY > 300) {
+                    clearInterval(motion);
+                    motion = null;
+                } else if (newY < 0) {
+                    clearInterval(motion);
+                    motion = null;
+                } else {
+                    if ((newY + 150) % 150 == 0) {
+                        lift.style.fill = "green";
+                    } else {
+                        lift.style.fill = "#b5651d";
+                    }
+                    // change the y attribute of svg element g which has a rect and text
+                    liftText.setAttribute("y", newY);
+                }
+            }
+        </script>
+    </center>
+</body>
+
+</html>
